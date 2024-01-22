@@ -1,0 +1,3 @@
+map metastation
+	default
+endmap

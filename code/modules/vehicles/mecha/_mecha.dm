@@ -553,7 +553,7 @@
 	var/mob/living/livinguser = user
 	if(selected)
 		if(!(livinguser in return_controllers_with_flag(VEHICLE_CONTROL_EQUIPMENT)))
-			balloon_alert(user, "wrong seat for equipment!")
+			to_chat(livinguser, "<span class='warning'>You aren't in the right seat!</span>")
 			return
 		if(!Adjacent(target) && (selected.range & MECHA_RANGED))
 			if(HAS_TRAIT(livinguser, TRAIT_PACIFISM) && selected.harmful)

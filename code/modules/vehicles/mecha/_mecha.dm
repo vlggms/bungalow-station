@@ -534,12 +534,12 @@
 	if(isAI(user) == !LAZYACCESS(modifiers, MIDDLE_CLICK))//BASICALLY if a human uses MMB, or an AI doesn't, then do nothing.
 		return
 	if(phasing)
-		balloon_alert(user, "not while [phasing]!")
+		to_chat(occupants, "[icon2html(src, occupants)]<span class='warning'>Unable to interact with objects while phasing.</span>")
 		return
 	if(user.incapacitated())
 		return
 	if(construction_state)
-		balloon_alert(user, "end maintenance first!")
+		to_chat(occupants, "[icon2html(src, occupants)]<span class='warning'>Maintenance protocols in effect.</span>")
 		return
 	if(!get_charge())
 		return

@@ -171,14 +171,14 @@ const PageBuyingShuttle = (props, context) => {
           key={shuttle.ref}
           buttons={(
             <Button
-              content={`${shuttle.creditCost.toLocaleString()} ahn`}
+              content={`${shuttle.creditCost.toLocaleString()} credits`}
               disabled={data.budget < shuttle.creditCost}
               onClick={() => act("purchaseShuttle", {
                 shuttle: shuttle.ref,
               })}
               tooltip={
                 data.budget < shuttle.creditCost
-                  ? `You need ${shuttle.creditCost - data.budget} more ahn.`
+                  ? `You need ${shuttle.creditCost - data.budget} more credits.`
                   : undefined
               }
               tooltipPosition="left"
@@ -380,30 +380,22 @@ const PageMain = (props, context) => {
 
       {!!canSetAlertLevel && (
         <Section title="Alert Level">
-          <Flex.Item>
-            <Box>
-              Currently on <b>{capitalize(alertLevel)}</b>.
-            </Box>
-          </Flex.Item>
-          <Flex justify="center">
+          <Flex justify="space-between">
+            <Flex.Item>
+              <Box>
+                Currently on <b>{capitalize(alertLevel)}</b> Alert
+              </Box>
+            </Flex.Item>
+
             <Flex.Item>
               <AlertButton
-                alertLevel="no warning"
+                alertLevel="green"
                 showAlertLevelConfirm={showAlertLevelConfirm}
                 setShowAlertLevelConfirm={setShowAlertLevelConfirm}
               />
+
               <AlertButton
-                alertLevel="first warning"
-                showAlertLevelConfirm={showAlertLevelConfirm}
-                setShowAlertLevelConfirm={setShowAlertLevelConfirm}
-              />
-              <AlertButton
-                alertLevel="second warning"
-                showAlertLevelConfirm={showAlertLevelConfirm}
-                setShowAlertLevelConfirm={setShowAlertLevelConfirm}
-              />
-              <AlertButton
-                alertLevel="third warning"
+                alertLevel="blue"
                 showAlertLevelConfirm={showAlertLevelConfirm}
                 setShowAlertLevelConfirm={setShowAlertLevelConfirm}
               />

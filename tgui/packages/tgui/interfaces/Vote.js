@@ -1,27 +1,27 @@
-import { useBackend } from '../backend';
-import { Box, Icon, Stack, Button, Section, NoticeBox, LabeledList, Collapsible } from '../components';
-import { Window } from '../layouts';
+import { useBackend } from "../backend";
+import { Box, Icon, Stack, Button, Section, NoticeBox, LabeledList, Collapsible } from "../components";
+import { Window } from "../layouts";
 
 export const Vote = (props, context) => {
   const { data } = useBackend(context);
   const { mode, question, lower_admin } = data;
 
-  /**
-   * Adds the voting type to title if there is an ongoing vote.
-   */
-  let windowTitle = 'Vote';
+  // Adds the voting type to title if there is an ongoing vote
+  let windowTitle = "Vote";
   if (mode) {
-    windowTitle += ': ' + (question || mode).replace(/^\w/, c => c.toUpperCase());
+    windowTitle += ": " + (question || mode).replace(/^\w/, c => c.toUpperCase());
   }
 
   return (
     <Window title={windowTitle} width={400} height={500}>
       <Window.Content>
         <Stack fill vertical>
-          <Section title="Create Vote">
-            <VoteOptions />
-            {!!lower_admin && <VotersList />}
-          </Section>
+          {!!lower_admin && (
+            <Section title="Admin Options">
+              <VoteOptions />
+              <VotersList />
+            </Section>
+          )}
           <ChoicesPanel />
           <TimePanel />
         </Stack>
@@ -30,10 +30,7 @@ export const Vote = (props, context) => {
   );
 };
 
-/**
- * The create vote options menu. Only upper admins can disable voting.
- * @returns A section visible to everyone with vote options.
- */
+// Gives access to starting votes
 const VoteOptions = (props, context) => {
   const { act, data } = useBackend(context);
   const {
@@ -41,7 +38,6 @@ const VoteOptions = (props, context) => {
     allow_vote_transfer,
     allow_vote_restart,
     allow_vote_map,
-    lower_admin,
     upper_admin,
   } = data;
 
@@ -52,80 +48,75 @@ const VoteOptions = (props, context) => {
           <Stack.Item>
             <Stack vertical>
               <Stack.Item>
-                {!!lower_admin && (
+                {!!upper_admin && (
                   <Button.Checkbox
                     mr={!allow_vote_map ? 1 : 1.6}
                     color="red"
                     checked={!!allow_vote_map}
-                    disabled={!upper_admin}
-                    onClick={() => act('toggle_map')}>
-                    {allow_vote_map ? 'Enabled' : 'Disabled'}
+                    onClick={() => act("toggle_map")}>
+                    {allow_vote_map ? "Enabled" : "Disabled"}
                   </Button.Checkbox>
                 )}
-                <Button disabled={!allow_vote_map}
-                  onClick={() => act('map')}>
+                <Button
+                  disabled={!upper_admin || !allow_vote_map}
+                  onClick={() => act("map")}>
                   Map
                 </Button>
               </Stack.Item>
               <Stack.Item>
-                {!!lower_admin && (
+                {!!upper_admin && (
                   <Button.Checkbox
                     mr={!allow_vote_transfer ? 1 : 1.6}
                     color="red"
                     checked={!!allow_vote_transfer}
-                    disabled={!upper_admin}
-                    onClick={() => act('toggle_transfer')}>
-                    {allow_vote_transfer ? 'Enabled' : 'Disabled'}
+                    onClick={() => act("toggle_transfer")}>
+                    {allow_vote_transfer ? "Enabled" : "Disabled"}
                   </Button.Checkbox>
                 )}
                 <Button
-                  disabled={!allow_vote_transfer}
-                  onClick={() => act('transfer')}>
+                  disabled={!upper_admin || !allow_vote_transfer}
+                  onClick={() => act("transfer")}>
                   Transfer
                 </Button>
               </Stack.Item>
               <Stack.Item>
-                {!!lower_admin && (
+                {!!upper_admin && (
                   <Button.Checkbox
                     mr={!allow_vote_restart ? 1 : 1.6}
                     color="red"
                     checked={!!allow_vote_restart}
-                    disabled={!upper_admin}
-                    onClick={() => act('toggle_restart')}>
-                    {allow_vote_restart ? 'Enabled' : 'Disabled'}
+                    onClick={() => act("toggle_restart")}>
+                    {allow_vote_restart ? "Enabled" : "Disabled"}
                   </Button.Checkbox>
                 )}
                 <Button
-                  disabled={!allow_vote_restart}
-                  onClick={() => act('restart')}>
+                  disabled={!upper_admin || !allow_vote_restart}
+                  onClick={() => act("restart")}>
                   Restart
                 </Button>
               </Stack.Item>
               <Stack.Item>
-                {!!lower_admin && (
+                {!!upper_admin && (
                   <Button.Checkbox
                     mr={!allow_vote_mode ? 1 : 1.6}
                     color="red"
                     checked={!!allow_vote_mode}
-                    disabled={!upper_admin}
-                    onClick={() => act('toggle_gamemode')}>
-                    {allow_vote_mode ? 'Enabled' : 'Disabled'}
+                    onClick={() => act("toggle_gamemode")}>
+                    {allow_vote_mode ? "Enabled" : "Disabled"}
                   </Button.Checkbox>
                 )}
                 <Button
-                  disabled={!allow_vote_mode}
-                  onClick={() => act('gamemode')}>
+                  disabled={!upper_admin || !allow_vote_mode}
+                  onClick={() => act("gamemode")}>
                   Gamemode
                 </Button>
               </Stack.Item>
             </Stack>
           </Stack.Item>
           <Stack.Item>
-            {!!lower_admin && (
-              <Button disabled={!lower_admin} onClick={() => act('custom')}>
-                Create Custom Vote
-              </Button>
-            )}
+            <Button disabled={!upper_admin} onClick={() => act("custom")}>
+              Create Custom Vote
+            </Button>
           </Stack.Item>
         </Stack>
       </Collapsible>
@@ -133,17 +124,14 @@ const VoteOptions = (props, context) => {
   );
 };
 
-/**
- * View Voters by ckey. Admin only.
- * @returns A collapsible list of voters
- */
+// Table to view voters by ckey
 const VotersList = (props, context) => {
   const { data } = useBackend(context);
   const { voting } = data;
 
   return (
     <Stack.Item>
-      <Collapsible title={`View Voters${voting.length ? `: ${voting.length}` : ""}`}>
+      <Collapsible title={`View Voters: ${voting.length}`}>
         <Section height={8} fill scrollable>
           {voting.map(voter => {
             return <Box key={voter}>{voter}</Box>;
@@ -154,10 +142,7 @@ const VotersList = (props, context) => {
   );
 };
 
-/**
- * The choices panel which displays all options in the list.
- * @returns A section visible to all users.
- */
+// Display choices
 const ChoicesPanel = (props, context) => {
   const { act, data } = useBackend(context);
   const { choices, selected_choice } = data;
@@ -176,7 +161,7 @@ const ChoicesPanel = (props, context) => {
                     <Button
                       disabled={i === selected_choice - 1}
                       onClick={() => {
-                        act('vote', { index: i + 1 });
+                        act("vote", { index: i + 1 });
                       }}>
                       Vote
                     </Button>
@@ -186,8 +171,7 @@ const ChoicesPanel = (props, context) => {
                       alignSelf="right"
                       mr={2}
                       color="green"
-                      name="vote-yea"
-                    />
+                      name="vote-yea" />
                   )}
                   {choice.votes} Votes
                 </LabeledList.Item>
@@ -203,24 +187,20 @@ const ChoicesPanel = (props, context) => {
   );
 };
 
-/**
- * Countdown timer at the bottom. Includes a cancel vote option for admins.
- * @returns A section visible to everyone.
- */
+// Countdown timer at the bottom. Includes a cancel vote option for admins
 const TimePanel = (props, context) => {
   const { act, data } = useBackend(context);
-  const { lower_admin, time_remaining } = data;
+  const { upper_admin, time_remaining } = data;
 
   return (
     <Stack.Item mt={1}>
       <Section>
         <Stack justify="space-between">
-          <Box fontSize={1.5}>Time Remaining: {time_remaining || 0}s</Box>
-          {!!lower_admin && (
-            <Button
-              color="red"
-              disabled={!lower_admin}
-              onClick={() => act('cancel')}>
+          <Box fontSize={1.5}>
+            Time Remaining: {time_remaining || 0}s
+          </Box>
+          {!!upper_admin && (
+            <Button color="red" onClick={() => act('cancel')}>
               Cancel Vote
             </Button>
           )}

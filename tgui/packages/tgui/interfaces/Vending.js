@@ -30,7 +30,7 @@ const VendingRow = (props, context) => {
   return (
     <Table.Row>
       <Table.Cell collapsing>
-        {product.img && (
+        {product.base64 && (
           <img
             src={`data:image/jpeg;base64,${product.img}`}
             style={{
@@ -60,8 +60,7 @@ const VendingRow = (props, context) => {
             || productStock <= (product.max_amount / 2) && 'average'
             || 'good'
           )}>
-          {custom ? product.amount : productStock.amount}
-          {productStock <= 0 ? 'sold out' : 'in stock'}
+          {productStock} in stock
         </Box>
       </Table.Cell>
       <Table.Cell collapsing textAlign="center">
@@ -76,7 +75,7 @@ const VendingRow = (props, context) => {
           <Button
             fluid
             disabled={(
-              productStock.amount === 0
+              productStock === 0
               || !free && (
                 !data.user
                 || product.price > data.user.cash
@@ -137,7 +136,7 @@ export const Vending = (props, context) => {
                 {' '}
                 <b>{user.job || 'Unemployed'}</b>!
                 <br />
-                Your balance is <b>{user.cash} ahn</b>.
+                Your balance is <b>{user.cash} credits</b>.
               </Box>
             ) || (
               <Box color="light-grey">

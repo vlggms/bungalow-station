@@ -165,7 +165,7 @@
 				scope.status |= BREAKING
 				break
 			else if(istype(S, /node/statement/ContinueStatement))
-				if(!scope.allowed_status & CONTINUING)
+				if(!(scope.allowed_status & CONTINUING))
 					//RaiseError(new/runtimeError/UnexpectedReturn())
 					continue
 				scope.status |= CONTINUING

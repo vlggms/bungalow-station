@@ -534,12 +534,12 @@
 	if(isAI(user) == !LAZYACCESS(modifiers, MIDDLE_CLICK))//BASICALLY if a human uses MMB, or an AI doesn't, then do nothing.
 		return
 	if(phasing)
-		balloon_alert(user, "not while [phasing]!")
+		to_chat(occupants, "[icon2html(src, occupants)]<span class='warning'>Unable to interact with objects while phasing.</span>")
 		return
 	if(user.incapacitated())
 		return
 	if(construction_state)
-		balloon_alert(user, "end maintenance first!")
+		to_chat(occupants, "[icon2html(src, occupants)]<span class='warning'>Maintenance protocols in effect.</span>")
 		return
 	if(!get_charge())
 		return
@@ -553,7 +553,7 @@
 	var/mob/living/livinguser = user
 	if(selected)
 		if(!(livinguser in return_controllers_with_flag(VEHICLE_CONTROL_EQUIPMENT)))
-			balloon_alert(user, "wrong seat for equipment!")
+			to_chat(livinguser, "<span class='warning'>You aren't in the right seat!</span>")
 			return
 		if(!Adjacent(target) && (selected.range & MECHA_RANGED))
 			if(HAS_TRAIT(livinguser, TRAIT_PACIFISM) && selected.harmful)
